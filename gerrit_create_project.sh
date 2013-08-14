@@ -96,4 +96,4 @@ project_name=$1
 project_parent=$2
 
 create_project $project_name $project_parent
-init_project $3 $4 $project_name
+init_project $3 $4

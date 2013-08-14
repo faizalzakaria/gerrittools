@@ -55,7 +55,7 @@ function create_project() {
 }
 
 function add_remote() {
-  f_execute "git add remote origin $1 || ERR=\"y\""
+  f_execute "git remote add origin $1 || ERR=\"y\""
   f_check_error "Failed to add remote '$1' ..." $ERR
 }
 
@@ -72,7 +72,7 @@ function init_project() {
     branch=$1
   fi
 
-  local remote="ssh://${GERRIT_SERVER}:29418"
+  local remote="ssh://${GERRIT_SERVER}:29418/$project_name"
   if [ "$2" != "" ]; then
     remote=$2
   fi
@@ -80,6 +80,8 @@ function init_project() {
   add_remote $remote
   f_execute "git push origin master:refs/heads/${branch} || ERR=\"y\""
   f_check_error "Failed to push to server ..." $ERR
+
+  rm -rf $dir
 }
 
 
@@ -90,5 +92,8 @@ if [ $# -lt 2 ]; then
   exit 1
 fi
 
-create_project $1 $2
-init_project $3 $4
+project_name=$1
+project_parent=$2
+
+create_project $project_name $project_parent
+init_project $3 $4 $project_name
